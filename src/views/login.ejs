@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <% include templates/head.ejs %>
+
+    <link rel="stylesheet" href="/css/login.css"/>
+    <script type="text/javascript" src="/js/login.js"></script>
+</head>
+<body>    
+    <script>
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : '2126043384293790',
+                cookie     : true,
+                xfbml      : true,
+                version    : 'v2.12'
+            });
+
+            FB.AppEvents.logPageView();
+
+            FB.getLoginStatus(function(response) {
+                statusChangeCallback(response);
+                console.log(response);
+            })
+        };
+
+        (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+    <div class="container-fluid">
+        <img src="/res/firstBlurred.jpg" class="mx-auto d-block" style="height: 100vh; min-height: 100vh">
+        <div class="center">
+            <div class="box">
+                <h1>Log In</h1>
+                <form action="/auth/login" method="post">
+                    <div class="input-group">
+                        <input type="email" id="email" name="email" autocomplete="off" onblur="checkInput(this)" />
+                        <label for="email">Email</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="password" name="password" onblur="checkInput(this)" />
+                        <label for="password">Password</label>
+                    </div>
+                    <input type="submit" value="Enter" />
+                    <div>
+                        <button type="button" class="btn btn-link">Lost Password?</button>
+                        <a href="/auth/signup">
+                            <button type="button" class="btn btn-link">Signup</button>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+</script>
+</html>
