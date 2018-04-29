@@ -13,7 +13,7 @@
             console.log(response);
 
             if (response.status === 'connected') {            
-                testAPI();
+                fbLogin();
             }
         }
         function checkLoginState() {
@@ -29,13 +29,13 @@
                 xfbml      : true,
                 version    : 'v2.12'
             });
-/*
+
             FB.getLoginStatus(function(response) {
                 statusChangeCallback(response);
                   console.log(response);
             });
 
-*/
+
 
             FB.AppEvents.logPageView();
         };
@@ -49,13 +49,17 @@
         }(document, 'script', 'facebook-jssdk'));
 
 
-function testAPI() {
+function fbLogin() {
     console.log('Welcome!  Fetching your information.... ');
     FB.api('/me', {
-        fields: 'name, email'
+        fields: 'first_name, last_name, email'
     }, function(response) {
         console.log('Successful login for: ' + response.name);
         console.log('Full response:', response);
+
+        xhttp.open("POST", "/auth/login", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send("type=fb&email=" + encodeURIComponent(response.email) + "&id=" + encodeURIComponent(response.id) + "&firstName=" + encodeURIComponent(response.first_name) + "&lastName=" + encodeURIComponent(response.last_name));
     });
 }
     </script>
@@ -73,6 +77,7 @@ function testAPI() {
                         <input type="password" id="password" name="password" onblur="checkInput(this)" />
                         <label for="password">Password</label>
                     </div>
+                    <input type="hidden" value="shoffy"/>
                     <input type="submit" value="Enter" />
                     <div>
                         <button type="button" class="btn btn-link">Lost Password?</button>

@@ -68,32 +68,87 @@ const database = function () {
             const collection = db.collection('users');
 
             user.email = user.email.toLowerCase();
-            user.password = crypto.createHash('sha256', secret).update(user.password).digest('hex');
+            if (!user.type || user.type == 'shoffy') {
+                user.password = crypto.createHash('sha256', secret).update(user.password).digest('hex');
 
-            collection.findOne({
-                email: user.email,
-                password: user.password
-            }, function (err, result) {
-                if (err) {
-                    throw err;
-                }
+                collection.findOne({
+                    email: user.email,
+                    password: user.password
+                }, function (err, result) {
+                    if (err) {
+                        throw err;
+                    }
 
-                var response = {
-                    state: false
-                }
+                    var response = {
+                        state: false
+                    }
 
-                if (result) {
-                    response.state = true;
-                    response.object = result;
+                    if (result) {
+                        response.state = true;
+                        response.object = result;
 
-                    delete response.object.password;
+                        delete response.object.password;
 
-                    return callback(response);
-                } else {
-                    return callback(response);
-                }
-            });
-        })
+                        return callback(response);
+                    } else {
+                        return callback(response);
+                    }
+                });
+            } else if (user.type == 'fb') {
+                collection.findOne({
+                    email: user.email
+                }, function (err, result) {
+                    if (err) {
+                        throw err;
+                    }
+
+                    var response = {
+                        state: false
+                    }
+
+                    if (result) {
+                        if (!result.fbid) {
+                            if (result.fbid == user.id) {
+                                response.state = true;
+                                response.object = result;
+
+                                delete response.object.password;
+
+                                return callback(response);
+                            } else {
+                                return callback(response);
+                            }
+                        } else {
+                            collection.updateOne(result, {
+                                $set: {
+                                    fbid: user.id,
+                                    firstName: user.first_name,
+                                    lastName: user.last_name
+                                }
+                            }, function (err, responseUpdate) {
+                                if (err) {
+                                    throw err;
+                                }
+
+                                console.log('Adding FB to Shoffy complete');
+
+                                response.state = true;
+                                response.object = result;
+                                response.object.fbid = user.id;
+                                response.object.firstName = user.first_name;
+                                response.object.lastName = user.last_name;
+
+                                delete response.object.password;
+
+                                return callback(response);
+                            });
+                        }
+                    } else {
+                        return callback(response);
+                    }
+                });
+            }
+        });
     }
 
     return {

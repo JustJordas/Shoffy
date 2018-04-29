@@ -36,6 +36,8 @@ var router = function () {
         .post(function (req, res) {
             var user = req.body;
 
+            console.log(user);
+
             database.loginUser(user, function (response) {
                 if (response.state == true) {
                     req.session.user = response.object;
@@ -44,7 +46,7 @@ var router = function () {
                 } else {
                     res.redirect('/auth/login');
                 }
-            })
+            });
         });
 
     return authRouter;
