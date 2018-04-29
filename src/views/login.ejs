@@ -57,6 +57,8 @@ function fbLogin() {
         console.log('Successful login for: ' + response.name);
         console.log('Full response:', response);
 
+        var xhttp = new XMLHttpRequest();
+
         xhttp.open("POST", "/auth/login", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("type=fb&email=" + encodeURIComponent(response.email) + "&id=" + encodeURIComponent(response.id) + "&firstName=" + encodeURIComponent(response.first_name) + "&lastName=" + encodeURIComponent(response.last_name));
