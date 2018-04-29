@@ -42,6 +42,8 @@ var router = function () {
                 if (response.state == true) {
                     req.session.user = response.object;
 
+                    console.log('Logged user:', req.session.user);
+
                     res.redirect('/');
                 } else {
                     res.redirect('/auth/login');
