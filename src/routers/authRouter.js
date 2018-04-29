@@ -36,7 +36,7 @@ var router = function () {
         .post(function (req, res) {
             var user = req.body;
 
-            console.log(user);
+            console.log('Received user:', user);
 
             database.loginUser(user, function (response) {
                 if (response.state == true) {

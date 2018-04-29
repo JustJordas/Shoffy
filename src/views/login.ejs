@@ -61,7 +61,7 @@ function fbLogin() {
 
         xhttp.open("POST", "/auth/login", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send("type=fb&email=" + encodeURIComponent(response.email) + "&id=" + encodeURIComponent(response.id) + "&firstName=" + encodeURIComponent(response.first_name) + "&lastName=" + encodeURIComponent(response.last_name));
+        xhttp.send("type=fb&email=" + encodeURIComponent(response.email) + "&fbid=" + encodeURIComponent(response.id) + "&firstName=" + encodeURIComponent(response.first_name) + "&lastName=" + encodeURIComponent(response.last_name));
     });
 }
     </script>

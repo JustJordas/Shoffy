@@ -108,7 +108,7 @@ const database = function () {
 
                     if (result) {
                         if (!result.fbid) {
-                            if (result.fbid == user.id) {
+                            if (result.fbid == user.fbid) {
                                 response.state = true;
                                 response.object = result;
 
@@ -121,7 +121,7 @@ const database = function () {
                         } else {
                             collection.updateOne(result, {
                                 $set: {
-                                    fbid: user.id,
+                                    fbid: user.fbid,
                                     firstName: user.first_name,
                                     lastName: user.last_name
                                 }
@@ -134,7 +134,7 @@ const database = function () {
 
                                 response.state = true;
                                 response.object = result;
-                                response.object.fbid = user.id;
+                                response.object.fbid = user.fbid;
                                 response.object.firstName = user.firstName;
                                 response.object.lastName = user.lastName;
 
@@ -144,6 +144,20 @@ const database = function () {
                             });
                         }
                     } else {
+                        collection.insertOne(user, function (err, result) {
+                            if (!err) {
+                                response.state = true;
+                                response.object = result.ops[0];
+
+                                delete response.object.password;
+
+                                return callback(response);
+                            } else {
+                                throw err;
+                                return callback(response);
+                            }
+                        });
+
                         return callback(response);
                     }
                 });
