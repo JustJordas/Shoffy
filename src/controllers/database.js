@@ -122,8 +122,8 @@ const database = function () {
                             collection.updateOne(result, {
                                 $set: {
                                     fbid: user.fbid,
-                                    firstName: user.first_name,
-                                    lastName: user.last_name
+                                    firstName: user.firstName,
+                                    lastName: user.lastName
                                 }
                             }, function (err, responseUpdate) {
                                 if (err) {
@@ -161,6 +161,8 @@ const database = function () {
                         return callback(response);
                     }
                 });
+            } else {
+                return callback(response);
             }
         });
     }
