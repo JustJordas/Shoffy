@@ -16,15 +16,13 @@
                 version    : 'v2.12'
             });
 
-            FB.AppEvents.logPageView();
-        };
-
-        function checkFBLogin() {
             FB.getLoginStatus(function(response) {
-                statusChangeCallback(response);
+                //statusChangeCallback(response);
                 console.log(response);
             })
-        }
+
+            FB.AppEvents.logPageView();
+        };
 
         (function(d, s, id){
             var js, fjs = d.getElementsByTagName(s)[0];
@@ -61,9 +59,7 @@
     </div>
 </body>
 <script>
-    $().ready(function() {
-        checkFBLogin();
-    });
+
 
     
 </script>
