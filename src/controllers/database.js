@@ -135,8 +135,8 @@ const database = function () {
                                 response.state = true;
                                 response.object = result;
                                 response.object.fbid = user.id;
-                                response.object.firstName = user.first_name;
-                                response.object.lastName = user.last_name;
+                                response.object.firstName = user.firstName;
+                                response.object.lastName = user.lastName;
 
                                 delete response.object.password;
 
