@@ -28,6 +28,7 @@
                 appId      : '2126043384293790',
                 cookie     : true,
                 xfbml      : true,
+                status     : true,
                 version    : 'v2.12'
             });
 /*
@@ -55,7 +56,7 @@ function fbLogin() {
     FB.api('/me', {
         fields: 'first_name, last_name, email'
     }, function(response) {
-        console.log('Successful login for: ' + response.name);
+        console.log('Successful login for: ' + response.first_name);
         console.log('Full response:', response);
 
         var xhttp = new XMLHttpRequest();
@@ -92,8 +93,8 @@ function fbLogin() {
                 <!--
                     <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="true"></div>
                 -->
-                <div scope="public_profile,email" onlogin="checkLoginState();" class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="true">
-</div>
+                <fb:login-button scope="public_profile,email" onlogin="checkLoginState();" class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="true">
+</fb:login-button>
             </div>
         </div>
     </div>
