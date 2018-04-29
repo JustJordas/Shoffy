@@ -31,7 +31,7 @@
                 status     : true,
                 version    : 'v2.12'
             });
-            
+
             FB.getLoginStatus(function(response) {
                 statusChangeCallback(response);
                   console.log(response);
@@ -63,6 +63,8 @@ function fbLogin() {
         xhttp.open("POST", "/auth/login", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("type=fb&email=" + encodeURIComponent(response.email) + "&fbid=" + encodeURIComponent(response.id) + "&firstName=" + encodeURIComponent(response.first_name) + "&lastName=" + encodeURIComponent(response.last_name));
+
+        window.top.location = "https://www.shop-shoffy.com";
     });
 }
     </script>
