@@ -107,7 +107,7 @@ const database = function () {
                     }
 
                     if (result) {
-                        if (!result.fbid) {
+                        if (result.fbid) {
                             if (result.fbid == user.fbid) {
                                 response.state = true;
                                 response.object = result;
