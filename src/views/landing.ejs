@@ -3,8 +3,8 @@
 
 <head>
     <% include templates/head.ejs %>
-        <link rel="stylesheet" href="/css/login.css" />
-        <script type="text/javascript" src="/js/login.js"></script>
+    <link rel="stylesheet" href="/css/login.css" />
+    <script type="text/javascript" src="/js/login.js"></script>
 </head>
 
 <body>
@@ -12,7 +12,9 @@
         <img src="/res/firstBlurred.jpg" class="mx-auto d-block" style="height: 100vh; min-height: 100vh">
         <div class="center">
             <div class="box">
-                <h1>Hello, <%= user.firstName %> </h1>
+                <a href="/map" >
+                    <h1>Hello, <%= user.firstName %> </h1>
+                </a>
             </div>
         </div>
     </div>

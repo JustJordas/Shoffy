@@ -71,6 +71,8 @@ const database = function () {
             if (!user.type || user.type == 'shoffy') {
                 user.password = crypto.createHash('sha256', secret).update(user.password).digest('hex');
 
+                console.log('Logging via Shoffy', user);
+
                 collection.findOne({
                     email: user.email,
                     password: user.password

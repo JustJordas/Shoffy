@@ -39,6 +39,7 @@ var router = function () {
             console.log('Received user:', user);
 
             database.loginUser(user, function (response) {
+                console.log(response);
                 if (response.state == true) {
                     req.session.user = response.object;
 
