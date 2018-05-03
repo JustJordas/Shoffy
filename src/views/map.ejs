@@ -61,7 +61,7 @@
 
 					map.setCenter(pos);
 
-					
+
 					var request = {
 						location: pos,
 						radius: '500',
@@ -107,9 +107,9 @@
 			});
 
 			google.maps.event.addListener(marker, 'click', function() {
-				//infoWindow.setContent(place.name);
-				//infoWindow.open(map, this);
-				window.location.replace("/map/" + place_id);
+				infoWindow.setContent(place.name);
+				infoWindow.open(map, this);
+				//window.location.replace("/map/" + place.place_id);
 			});
 		}
 
