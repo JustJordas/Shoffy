@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <% include templates/head.ejs %>
+
+    <link rel="stylesheet" href="/css/login.css"/>
+    <script type="text/javascript" src="/js/login.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <img src="/res/images2.jpg" class="mx-auto d-block" style="height: 100vh; min-height: 100vh">
+    <div class="center">
+        <div class="box">
+            <h1>Profile</h1>
+            <form action="/user/profile" method="post">
+            	<input type="hidden" name="userID" value="<%= user._id %>" />
+                <div class="input-group">
+                    <input class="active" type="text" id="firstName" name="firstName" value="<%= user.firstName %>" autocomplete="off" onblur="checkInput(this)" />
+                    <label for="firstName">First name</label>
+                </div>
+                <div class="input-group">
+                    <input class="active" type="text" id="lastName" name="lastName" value="<%= user.lastName %>" autocomplete="off" onblur="checkInput(this)" />
+                    <label for="lastName">Last name</label>
+                </div>
+                <!--
+                <div class="input-group">
+                    <input type="text" id="address" onblur="checkInput(this)" />
+                    <label for="address">Delivery address</label>
+                </div>
+                -->
+                <div class="input-group">
+                    <input class="active" type="email" id="email" name="email" value="<%= user.email %>" onblur="checkInput(this)" />
+                    <label for="email">Email</label>
+                </div>
+                <input type="submit" value="Save" />
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

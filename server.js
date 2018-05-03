@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 //const database = require('./src/controllers/database')();
 
 const authRouter = require('./src/routers/authRouter')();
+const userRouter = require('./src/routers/userRouter')();
 const mapRouter = require('./src/routers/mapRouter')();
 
 const util = require('util');
@@ -29,6 +30,7 @@ app.use(expressSession(sessionOptions));
 app.set('views', './src/views');
 app.set('view engine', 'ejs');
 app.use('/auth', authRouter);
+app.use('/user', userRouter);
 app.use('/map', mapRouter);
 
 // Landing page

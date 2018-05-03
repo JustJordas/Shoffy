@@ -169,9 +169,52 @@ const database = function () {
         });
     }
 
+    const updateUser = function (filter, update, callback) {
+        mongodb.connect(url, function (err, client) {
+            const db = client.db('shoffy');
+
+            const collection = db.collection('users');
+
+            /*
+                As we are matching based on the whole, if the password exists, we shall encrypt it is well, to match the DB records
+            */
+            if (filter.password) {
+                filter.password = crypto.createHmac('sha256', secret).update(filter.password).digest('hex');
+            }
+
+            /*
+                If the update contains a password, it means it was added in plain text, by an user. Hence, we shall hash it
+            */
+            if (update.password) {
+                update.password = crypto.createHmac('sha256', secret).update(update.password).digest('hex');
+            }
+
+            collection.updateOne(filter, {
+                '$set': update
+            }, function (err, result) {
+                var response = {
+                    state: false
+                }
+
+                if (!err) {
+                    response.state = true;
+
+                    if (result.modifiedCount == 0) {
+                        response.state = false;
+                    }
+
+                    return callback(response);
+                } else {
+                    return callback(response);
+                }
+            })
+        });
+    }
+
     return {
         saveUser: saveUser,
-        loginUser: loginUser
+        loginUser: loginUser,
+        updateUser: updateUser
     }
 }
 
