@@ -45,7 +45,11 @@ var router = function () {
 
                     console.log('Logged user:', req.session.user);
 
-                    res.redirect('/');
+                    if (req.session.user.type && req.session.user.type == 'admin') {
+                        res.redirect('/admin')
+                    } else {
+                        res.redirect('/');
+                    }
                 } else {
                     res.redirect('/auth/login');
                 }

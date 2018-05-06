@@ -69,6 +69,7 @@ const database = function () {
 
             user.email = user.email.toLowerCase();
             if (!user.type || user.type == 'shoffy') {
+                delete user.type;
                 user.password = crypto.createHash('sha256', secret).update(user.password).digest('hex');
 
                 console.log('Logging via Shoffy', user);
@@ -97,6 +98,7 @@ const database = function () {
                     }
                 });
             } else if (user.type == 'fb') {
+                delete user.type;
                 collection.findOne({
                     email: user.email
                 }, function (err, result) {
@@ -211,10 +213,150 @@ const database = function () {
         });
     }
 
+    const saveShop = function (shop, callback) {
+        mongodb.connect(url, function (err, client) {
+            if (err) {
+                console.log('Error saving shop', err);
+                throw err;
+            }
+
+            const db = client.db('shoffy');
+            const collection = db.collection('shops');
+
+            collection.insertOne(shop, function (err, result) {
+                var response = {
+                    state: false
+                }
+
+                if (!err) {
+                    response.state = true;
+                    response.object = result.ops[0];
+
+                    return callback(response);
+                } else {
+                    throw err;
+                    return callback(response);
+                }
+            });
+        });
+    }
+
+    const getShops = function (filter, callback) {
+        mongodb.connect(url, function (err, client) {
+            const db = client.db('shoffy');
+
+            const collection = db.collection('shops');
+
+            collection.find(filter).toArray(function (err, results) {
+                return callback(results);
+            });
+        });
+    }
+
+    const updateShops = function (filter, update, callback) {
+        mongodb.connect(url, function (err, client) {
+            const db = client.db('shoffy');
+
+            const collection = db.collection('shops');
+
+            collection.updateOne(filter, {
+                '$set': update
+            }, function (err, result) {
+                var response = {
+                    state: false
+                }
+
+                console.log('Update shops error:', err);
+
+                if (!err) {
+                    response.state = true;
+
+                    return callback(response);
+                } else {
+                    return callback(response);
+                }
+            })
+        });
+    }
+
+    const saveProduct = function (product, callback) {
+        mongodb.connect(url, function (err, client) {
+            if (err) {
+                console.log('Error saving product', err);
+                throw err;
+            }
+
+            const db = client.db('shoffy');
+            const collection = db.collection('products');
+
+            collection.insertOne(product, function (err, result) {
+                var response = {
+                    state: false
+                }
+
+                if (!err) {
+                    response.state = true;
+                    response.object = result.ops[0];
+
+                    return callback(response);
+                } else {
+                    throw err;
+                    return callback(response);
+                }
+            });
+        });
+    }
+
+    const getProducts = function (filter, callback) {
+        mongodb.connect(url, function (err, client) {
+            const db = client.db('shoffy');
+
+            const collection = db.collection('products');
+
+            collection.find(filter).toArray(function (err, results) {
+                return callback(results);
+            });
+        });
+    }
+
+    const updateProducts = function (filter, update, callback) {
+        mongodb.connect(url, function (err, client) {
+            const db = client.db('shoffy');
+
+            const collection = db.collection('products');
+
+            collection.updateOne(filter, {
+                '$set': update
+            }, {
+                upsert: true
+            }, function (err, result) {
+                var response = {
+                    state: false
+                }
+
+                console.log('Update products error:', err);
+
+                if (!err) {
+                    response.state = true;
+
+                    return callback(response);
+                } else {
+                    return callback(response);
+                }
+            })
+        });
+    }
+
     return {
         saveUser: saveUser,
         loginUser: loginUser,
-        updateUser: updateUser
+        updateUser: updateUser,
+        saveShop: saveShop,
+        getShops: getShops,
+        updateShops: updateShops,
+        saveProduct: saveProduct,
+        getProducts: getProducts,
+        updateProducts: updateProducts
     }
 }
 

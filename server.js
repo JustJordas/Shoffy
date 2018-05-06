@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 //const database = require('./src/controllers/database')();
 
 const authRouter = require('./src/routers/authRouter')();
+const adminRouter = require('./src/routers/adminRouter')();
 const userRouter = require('./src/routers/userRouter')();
 const mapRouter = require('./src/routers/mapRouter')();
 
@@ -30,15 +31,22 @@ app.use(expressSession(sessionOptions));
 app.set('views', './src/views');
 app.set('view engine', 'ejs');
 app.use('/auth', authRouter);
+app.use('/admin', adminRouter);
 app.use('/user', userRouter);
 app.use('/map', mapRouter);
 
 // Landing page
 app.get('/', function (req, res) {
 	if (req.session.user) {
-		res.render('landing.ejs', {
-			user: req.session.user
-		});
+		if (req.session.user.type && req.session.user.type == 'admin') {
+			res.redirect('/admin', {
+				user: req.session.user
+			});
+		} else {
+			res.render('landing', {
+				user: req.session.user
+			});
+		}
 	} else {
 		res.redirect('/auth/login');
 	}

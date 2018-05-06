@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <% include templates/head.ejs %>
+    <link rel="stylesheet" href="/css/login.css" />
+    <script type="text/javascript" src="/js/login.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <img src="/res/firstBlurred.jpg" class="mx-auto d-block" style="height: 100vh; min-height: 100vh">
+        <div class="center">
+            <div class="box">
+                <form action="/admin/addShop" method="post">
+                    <div class="input-group">
+                        <img id="imgLogo" src="" width="100%" />
+                        <input class="active" type="file" id="logoPath" autocomplete="off" onblur="checkInput(this)" />
+                        <input class="active" type="hidden" id="logo" name="logo" />
+                        <label for="logoPath">Logo</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="chain" name="chain" onblur="checkInput(this)" required />
+                        <label for="chain">Chain</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="name" name="name" onblur="checkInput(this)" required />
+                        <label for="name">Name</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="postcode" name="postcode" onblur="checkInput(this)" required />
+                        <label for="postcode">Postcode</label>
+                    </div>
+
+                    <!--
+                        Add automatic latlong detection
+                    -->
+
+                    <div class="input-group">
+                        <input type="number" step="any" id="lat" name="lat" onblur="checkInput(this)" required />
+                        <label for="lat">Latitude</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="number" step="any" id="long" name="long" onblur="checkInput(this)" required />
+                        <label for="long">Longitude</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        Save
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    document.getElementById('logoPath').onchange = function (evt) {
+        var tgt = evt.target || window.event.srcElement,
+            files = tgt.files;
+
+        // FileReader support
+        if (FileReader && files && files.length) {
+            var fr = new FileReader();
+            fr.onload = function () {
+                document.getElementById('imgLogo').src = fr.result;
+                document.getElementById('logo').value = fr.result;
+            }
+            fr.readAsDataURL(files[0]);
+        } else {
+            // fallback -- perhaps submit the input to an iframe and temporarily store
+            // them on the server until the user's session ends.
+        }
+    }
+</script>
+</html>

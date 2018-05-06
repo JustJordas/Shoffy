@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <% include templates/head.ejs %>
+    <link rel="stylesheet" href="/css/login.css" />
+    <script type="text/javascript" src="/js/login.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <img src="/res/firstBlurred.jpg" class="mx-auto d-block" style="height: 100vh; min-height: 100vh">
+        <div class="center">
+            <div class="box">
+                <h1>
+                    All products:
+                </h1>
+                <% products.forEach(function (product) { %>
+                    <div class="card text-white bg-dark">
+                        <img id="image<%= product._id %>" class="card-img-top" src="<%= product.image || '/res/image-not-found.jpg' %>" alt="Card image cap">
+                        <div class="input-group">
+                            <input id="input<%= product._id %>" class="active" type="file" id="logoPath" autocomplete="off" onblur="checkInput(this)" onchange="inputOnChange('<%= product._id %>');" />
+                            <input class="active" type="hidden" id="logo<%= product._id %>" name="image" />
+                            <label for="logoPath">Logo</label>
+                        </div>
+                        <div class="card-body">
+                            <div class="input-group">
+                                <input class="card-title active" type="text" id="name" onblur="checkInput(this)" value="<%= product.name %>" />
+                                <label for="name">Name</label>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+                <button id="beforeButton" class="btn btn-primary" onclick="addNewProduct(this);">
+                    Add new product
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    var products = <%= products %>;
+
+    function addNewProduct(e) {
+        const newElement = '<div class="card text-white bg-dark">' +
+                                '<img class="card-img-top" src="/res/image-not-found.jpg" alt="Card image cap">' +
+                                '<div class="card-body">' +
+                                    '<div class="input-group">' +
+                                        '<input class="card-title" type="text" id="name" onblur="checkInput(this)" required />' +
+                                        '<label for="name">Name</label>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>';
+        $(e).before(newElement);
+    }
+
+    //Array append + onchange each input... bleah
+
+    function inputOnChange (id) {
+        const evt = document.getElementById('input' + id);
+
+        var tgt = evt.target || window.event.srcElement,
+            files = tgt.files;
+
+        // FileReader support
+        if (FileReader && files && files.length) {
+            var fr = new FileReader();
+            fr.onload = function () {
+                document.getElementById('image'+ id).src = fr.result;
+                document.getElementById('logo' + id).value = fr.result;
+            }
+            fr.readAsDataURL(files[0]);
+        } else {
+            // fallback -- perhaps submit the input to an iframe and temporarily store
+            // them on the server until the user's session ends.
+        }
+    }
+</script>
+</html>

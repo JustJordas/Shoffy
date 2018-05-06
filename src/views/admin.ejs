@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <% include templates/head.ejs %>
+    <link rel="stylesheet" href="/css/login.css" />
+    <script type="text/javascript" src="/js/login.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <img src="/res/firstBlurred.jpg" class="mx-auto d-block" style="height: 100vh; min-height: 100vh">
+        <div class="center">
+            <div class="box">
+                <h1>
+                    All shops:
+                </h1>
+                <% if(typeof(shops) != 'undefined') { %>
+                    <% shops.forEach(function (shop) { %>
+                        <div class="card text-white bg-dark">
+                            <a class="btn btn-outline-primary" href="/admin/<%= shop._id %>/products">
+                                <img class="card-img-top" src="<%= shop.logo || '/res/image-not-found.jpg' %>" alt="Card image cap">
+                                <div class="card-body">
+                                    <h5 class="card-title"><%= shop.chain %></h5>
+                                    <p class="card-text">
+                                        <%= shop.name %>, <%= shop.postcode %>
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                    <% }); %>
+                <% } %>
+                <a class="btn btn-primary" href="/admin/addShop">
+                    Add new shop
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
