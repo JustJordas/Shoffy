@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <% include templates/head.ejs %>
+    <link rel="stylesheet" href="/css/login2.css" />
+    <script type="text/javascript" src="/js/login.js"></script>
+</head>
+<% console.log(order); %>
+<body>
+    <div class="container">
+        <img src="/res/firstBlurred.jpg" class="mx-auto d-block" style="height: 100vh; min-height: 100vh">
+        <div class="center">
+        	<div class="outterBox">
+	        	<h1>
+	                Order details: </br>
+                </h1>
+                <h4>
+                    From: <%= order.shop.name %></br>
+	            </h4>
+                <h4>
+                    Basket:
+                </h4>
+                <div>
+                    <% Object.keys(order.basket).forEach(function(productID) { %>
+                        <div class="card-body"> 
+                            <div class="input-group"> 
+                                <input id="name<%= productID %>" class="card-title active" type="text" onblur="checkInput(this)" value="<%= order.basket[productID].name %>" disabled /> 
+                                <label for="name<%= productID %>">Name</label> 
+                            </div>
+                            <div class="input-group"> 
+                                <input id="amount<%= productID %>" class="card-title active" type="number" step="1" onblur="checkInput(this)" value="<%= order.basket[productID].quantity %>" disabled/> 
+                                <label for="amount<%= productID %>">Quantity</label> 
+                            </div> 
+                        </div> 
+                    <% }); %>
+                </div>
+                <h4>
+                    Total: $<%= order.price %>
+                </h4>
+                <form action="/order/new" method="post">
+                    <input type="hidden" name="order" value="<%= JSON.stringify(order) %>" />
+                    <div class="input-group">
+                        <input id="address" type="address" name="address" onblur="checkInput(this)" required/>
+                        <label for="address">Address</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        Order now
+                    </button>
+                </form>
+			</div>
+        </div>
+    </div>
+</body>
+<script>
+</script>
+</html>

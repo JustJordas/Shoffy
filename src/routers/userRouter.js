@@ -5,6 +5,23 @@ const util = require('util');
 const database = require('../controllers/database')();
 
 var router = function () {
+    userRouter.route('/')
+        .all(function (req, res, next) {
+            if (!req.session.user) {
+                res.redirect('/auth/login');
+            } else {
+                next();
+            }
+        })
+        .get(function (req, res) {
+            database.getShops({}, function (shops) {
+                res.render('map', {
+                    user: req.session.user,
+                    shops: shops
+                });
+            });
+        });
+
     userRouter.route('/profile')
         .all(function (req, res, next) {
             if (!req.session.user) {

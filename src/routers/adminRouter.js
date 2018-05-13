@@ -42,8 +42,8 @@ var router = function () {
                 name: req.body.name,
                 postcode: req.body.postcode,
                 location: {
-                    lat: req.body.lat,
-                    long: req.body.long
+                    lat: parseFloat(req.body.lat),
+                    lng: parseFloat(req.body.long)
                 },
                 products: {}
             }
@@ -71,6 +71,7 @@ var router = function () {
                     database.getProducts({
                         shopID: shop._id
                     }, function (products) {
+                        console.log(products);
                         res.render('adminProducts', {
                             user: req.session.user,
                             shop: shop,
@@ -85,23 +86,47 @@ var router = function () {
         .post(function (req, res) {
             var products = JSON.parse(req.body.products);
 
-            database.getShop({
+            console.log(products);
+
+            database.getShops({
                 _id: objectID(req.params.shopID)
             }, function (shops) {
-                if (shop.length == 1) {
+                if (shops.length == 1) {
+                    const shop = shops[0];
+
+                    var productsID = [];
+
                     products.forEach(function (product) {
-                        if (product.changed == 'true') {
+                        if (productsID.indexOf(product._id) == -1) {
+                            productsID.push(product._id);
+                        }
+
+                        if (product.changed == true) {
                             delete product.changed;
 
-                            database.updateProduct({
+                            if (typeof (product._id.length) == 'undefined') {
+                                delete product._id;
+                            }
+
+                            product.shopID = shop._id;
+
+                            database.updateProducts({
                                 _id: objectID(product._id)
                             }, product, function (response) {});
-
-                            res.redirect('/admin');
                         }
                     });
+
+                    console.log(productsID);
+
+                    database.updateShops({
+                        _id: objectID(shop._id)
+                    }, {
+                        products: productsID
+                    }, function (response) {});
+
+                    res.redirect('/admin');
                 } else {
-                    res.redirect('/admin/${req.params.shopID}/products');
+                    res.redirect('/admin/' + req.params.shopID + '/products');
                 }
             });
         });

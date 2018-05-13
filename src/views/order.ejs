@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <% include templates/head.ejs %>
+        <link rel="stylesheet" href="/css/login2.css" />
+        <script type="text/javascript" src="/js/login.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <img src="/res/firstBlurred.jpg" class="mx-auto d-block" style="height: 100vh; min-height: 100vh">
+        <div class="center">
+            <div class="outterBox">
+                <h1>
+                    Basket for <%= order.user.firstName %>:
+                </h1>
+                <div class="box">
+                    <button id="beforeButton" type="hidden" class="btn btn-primary d-none" onclick="">
+                        Add new product
+                    </button>
+                </div>
+                <div class="row">
+                    <form id="formCompleteOrder" class="col-12" action="/order/<%= order._id %>/completed" method="post">
+                        <button type="submit" class="btn btn-primary col-12 basketButton">
+                            Mark as completed
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+var products = [];
+products = <%- JSON.stringify(order.basket) %>;
+
+
+var basket = {};
+
+Object.keys(products).forEach(function (productID) {
+    addNewProduct(products[productID]);
+});
+
+
+function addNewProduct(product = { _id: new Date().getTime(), image: '/res/image-not-found.jpg', name: 'no name', price: 0.0, new: true }) {
+
+    //console.log(product);
+
+    delete product.new;
+
+    const newElement = '' +
+        '<div id="group' + product._id + '" class="card text-white bg-dark">' +
+        '<img id="image' + product._id + '" class="card-img-top" src="' + product.image + '" alt="Card image cap">' +
+        '<div class="card-body">' +
+        '<div class="input-group">' +
+        '<input id="name' + product._id + '" class="card-title active" type="text" onblur="checkInput(this)" value="' + product.name + '" disabled />' +
+        '<label for="name' + product._id + '">Name</label>' +
+        '</div>' +
+        '<div class="input-group">' +
+        '<input id="price' + product._id + '" class="card-title active" type="number" step="any" onblur="checkInput(this)" value="' + product.price + '" disabled/>' +
+        '<label for="price' + product._id + '">Price</label>' +
+        '</div>' +
+        '<div class="input-group">' +
+        '<input id="amount' + product._id + '" class="card-title active" type="number" step="1" onblur="checkInput(this)" value="' + product.quantity + '" />' +
+        '<label for="amount' + product._id + '">Amount</label>' +
+        '</div>' +
+        '</div>' +
+        '</div>';
+
+    //console.log(newElement);
+
+    $("#beforeButton").before(newElement);
+
+    $("#group" + product._id).on('click', function () {
+        removeFromBasket(product._id)
+    });
+
+    $("#group" + product._id).on('contextmenu', function (e) {
+        e.preventDefault();
+        addToBasket(product._id)
+    });
+
+    basket[product._id] = product.quantity;
+}
+
+function addToBasket(id) {
+    //console.log('Clicked');
+
+    if (basket[id] < products[id].quantity) {
+        basket[id] += 1;
+        $('#amount' + id).val(parseInt($('#amount' + id).val()) + 1);
+    }
+
+    var sum = 0.0;
+
+    Object.keys(basket).forEach(function (productID) {
+        //console.log(parseFloat($('#price' + productID).val()));
+        sum += parseInt($('#amount' + productID).val()) * parseFloat($('#price' + productID).val());
+    });
+
+    //console.log(sum);
+
+    $('#basketButton').html('Order now: $' + sum.toFixed(2));
+}
+
+function max(a, b) {
+    if (a < b) {
+        return b;
+    } else {
+        return a;
+    }
+}
+
+function removeFromBasket(id) {
+    $('#amount' + id).val(max(parseInt($('#amount' + id).val()) - 1, 0));
+
+    if (basket[id] && basket[id] > 0) {
+        basket[id] -= 1;
+    }
+
+    var sum = 0.0;
+
+    Object.keys(basket).forEach(function (productID) {
+        //console.log(parseFloat($('#price' + productID).val()));
+        sum += parseInt($('#amount' + productID).val()) * parseFloat($('#price' + productID).val());
+    });
+
+    //console.log(sum);
+
+    $('#basketButton').html('Order now: $' + sum.toFixed(2));
+}
+
+function sendOrder() {
+    $("#inputBasket").val(JSON.stringify(basket));
+    $("#formNewOrder").submit();
+}
+
+//Array append + onchange each input... bleah
+</script>
+
+</html>

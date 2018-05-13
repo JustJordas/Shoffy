@@ -29,16 +29,24 @@
 		// failed.", it means you probably did not give permission for the browser to
 		// locate you.
 		var map, infoWindow;
+
+		var directionsService;
+		var directionsDisplay;
+		var currentPositionMarker;
+
 		function initMap() {
 			var pos = {lat: 53.473726, lng: -2.239979};
+			directionsService = new google.maps.DirectionsService();
+  			directionsDisplay = new google.maps.DirectionsRenderer();
 
 			map = new google.maps.Map(document.getElementById('map'), {
 				center: pos,
 				zoom: 15
 			});
+			directionsDisplay.setMap(map);
 			infoWindow = new google.maps.InfoWindow;
 
-			var currentPositionMarker = new google.maps.Marker({
+			currentPositionMarker = new google.maps.Marker({
 				position: pos,
 				map: map,
 				title: 'Current position'
@@ -59,15 +67,15 @@
 					currentPositionMarker.setPosition(pos);
 
 					map.setCenter(pos);
-
+/*
 					var request = {
 						location: pos,
 						radius: '500',
 						types: [],
 						keyword: 'supermarket'
 					};
-
-					service = new google.maps.places.PlacesService(map);
+*/
+					//service = new google.maps.places.PlacesService(map);
 					//service.nearbySearch(request, setShop);
 				}, function() {
 					handleLocationError(true, infoWindow, map.getCenter());
@@ -83,46 +91,59 @@
 			});
 		}
 
-		function setShop(results, status) {
-			if (status == google.maps.places.PlacesServiceStatus.OK) {
-				for (var i = 0; i < results.length; i++) {
-					var place = results[i];
-					createMarker(results[i]);
-				}
+		function addMarker(order) {
+			var marker = new google.maps.Marker({
+				map: map,
+				position: order.shop.location
+			});
+
+			var target = new google.maps.Marker({
+				map: map,
+				position: order.user.location
+			});
+
+			target.setMap(null);
+
+			trips[order._id] = {
+				source: marker,
+				target: target
 			}
-		}
-
-		function createMarker(place) {
-			var placeLoc = place.geometry.location;
-
-			console.log(place);
-
-			var marker = new google.maps.Marker({
-				map: map,
-				position: place.geometry.location
-			});
 
 			google.maps.event.addListener(marker, 'click', function() {
-				infoWindow.setContent(place.name);
+				infoWindow.setContent('<a href="/order/' + order._id + '">' + order.shop.name + '</a>');
 				infoWindow.open(map, this);
+
+				Object.keys(trips).forEach(function(orderID) {
+					trips[orderID].target.setMap(null);
+				});
+
+				target.setMap(map);
+
+				calcRoute(currentPositionMarker.position, trips[order._id].target.position, trips[order._id].source.position);
+
 				//window.location.replace("/map/" + place.place_id);
 			});
+/*
+			google.maps.event.addListener(marker, 'click', function() {
+				window.location.replace("/order/" + order._id);
+			});*/
 		}
 
-		function addMarker(shop) {
-			var marker = new google.maps.Marker({
-				map: map,
-				position: shop.location
-			});
+		function calcRoute(origin, destination, waypoint) {
+			var request = {
+				origin: origin,
+				destination: destination,
+				waypoints: [{
+					location: waypoint,
+					stopover: true
+				}],
+				travelMode: 'DRIVING'
+			};
 
-			google.maps.event.addListener(marker, 'mouseover', function() {
-				infoWindow.setContent(shop.name);
-				infoWindow.open(map, this);
-				//window.location.replace("/map/" + place.place_id);
-			});
-
-			google.maps.event.addListener(marker, 'click', function() {
-				window.location.replace("/shop/" + shop._id);
+			directionsService.route(request, function(response, status) {
+				if (status == 'OK') {
+					directionsDisplay.setDirections(response);
+				}
 			});
 		}
 
@@ -139,12 +160,14 @@
 	</script>
 </body>
 <script>
-	var shops = <%- JSON.stringify(shops) %>;
+	var orders = <%- JSON.stringify(orders) %>;
+
+	var trips = {};
 
 	$(document).ready(function () {
-		shops.forEach(function(shop) {
-			console.log(shop);
-			addMarker(shop);
+		orders.forEach(function(order) {
+			console.log(order);
+			addMarker(order);
 		});
 	});
 	

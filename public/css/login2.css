@@ -25,11 +25,25 @@ body {
   max-width: 400px;
 }
 
-.box {
+.outterBox {
   position: absolute;
   width: 100%;
   margin: 0 auto;
-  bottom: 5vw;
+  bottom: 0vh;
+  padding: 10px;
+  max-width: 400px;
+  border-radius: 2px;
+  max-height: 100vh;
+  height: 100vh;
+  overflow-y: scroll;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.box {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
   padding: 10px;
   max-width: 400px;
   border-radius: 2px;
@@ -37,6 +51,10 @@ body {
   overflow-y: scroll;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   background-color: rgba(0, 0, 0, 0.2);
+}
+
+.basketButton {
+  height: 5vh;
 }
 
 ::-webkit-scrollbar {

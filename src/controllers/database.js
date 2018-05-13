@@ -213,6 +213,18 @@ const database = function () {
         });
     }
 
+    const getUsers = function (filter, callback) {
+        mongodb.connect(url, function (err, client) {
+            const db = client.db('shoffy');
+
+            const collection = db.collection('users');
+
+            collection.find(filter).toArray(function (err, results) {
+                return callback(results);
+            });
+        });
+    }
+
     const saveShop = function (shop, callback) {
         mongodb.connect(url, function (err, client) {
             if (err) {
@@ -347,16 +359,88 @@ const database = function () {
         });
     }
 
+    const saveOrder = function (order, callback) {
+        mongodb.connect(url, function (err, client) {
+            if (err) {
+                console.log('Error saving order', err);
+                throw err;
+            }
+
+            const db = client.db('shoffy');
+            const collection = db.collection('orders');
+
+            collection.insertOne(order, function (err, result) {
+                var response = {
+                    state: false
+                }
+
+                if (!err) {
+                    response.state = true;
+                    response.object = result.ops[0];
+
+                    return callback(response);
+                } else {
+                    throw err;
+                    return callback(response);
+                }
+            });
+        });
+    }
+
+    const getOrders = function (filter, callback) {
+        mongodb.connect(url, function (err, client) {
+            const db = client.db('shoffy');
+
+            const collection = db.collection('orders');
+
+            collection.find(filter).toArray(function (err, results) {
+                return callback(results);
+            });
+        });
+    }
+
+    const updateOrders = function (filter, update, callback) {
+        mongodb.connect(url, function (err, client) {
+            const db = client.db('shoffy');
+
+            const collection = db.collection('orders');
+
+            collection.updateOne(filter, {
+                '$set': update
+            }, {
+                upsert: true
+            }, function (err, result) {
+                var response = {
+                    state: false
+                }
+
+                console.log('Update orders error:', err);
+
+                if (!err) {
+                    response.state = true;
+
+                    return callback(response);
+                } else {
+                    return callback(response);
+                }
+            })
+        });
+    }
+
     return {
         saveUser: saveUser,
         loginUser: loginUser,
+        getUsers: getUsers,
         updateUser: updateUser,
         saveShop: saveShop,
         getShops: getShops,
         updateShops: updateShops,
         saveProduct: saveProduct,
         getProducts: getProducts,
-        updateProducts: updateProducts
+        updateProducts: updateProducts,
+        saveOrder: saveOrder,
+        getOrders: getOrders,
+        updateOrders: updateOrders
     }
 }
 

@@ -15,50 +15,64 @@
                 <h1>
                     All products:
                 </h1>
-                <% products.forEach(function (product) { %>
-                    <div class="card text-white bg-dark">
-                        <img id="image<%= product._id %>" class="card-img-top" src="<%= product.image || '/res/image-not-found.jpg' %>" alt="Card image cap">
-                        <div class="input-group">
-                            <input id="input<%= product._id %>" class="active" type="file" id="logoPath" autocomplete="off" onblur="checkInput(this)" onchange="inputOnChange('<%= product._id %>');" />
-                            <input class="active" type="hidden" id="logo<%= product._id %>" name="image" />
-                            <label for="logoPath">Logo</label>
-                        </div>
-                        <div class="card-body">
-                            <div class="input-group">
-                                <input class="card-title active" type="text" id="name" onblur="checkInput(this)" value="<%= product.name %>" />
-                                <label for="name">Name</label>
-                            </div>
-                        </div>
-                    </div>
-                <% }); %>
-                <button id="beforeButton" class="btn btn-primary" onclick="addNewProduct(this);">
+                <button id="beforeButton" type="button" class="btn btn-primary" onclick="addNewProduct();">
                     Add new product
                 </button>
+                <button id="saveProductsButton" type="button" class="btn btn-primary" onclick="saveProducts();">
+                    Save products
+                </button>
+                <form id="formSaveProducts" class="d-none" action="/admin/<%= shop._id %>/products" method="post">
+                    <input id="productsData" type="hidden" name="products" />
+                </form>
             </div>
         </div>
     </div>
 </body>
 <script>
-    var products = <%= products %> || [];
+    var products = [];
+    products = <%- JSON.stringify(products) %>;
 
-    function addNewProduct(e) {
-        const newElement = '<div class="card text-white bg-dark">' +
-                                '<img class="card-img-top" src="/res/image-not-found.jpg" alt="Card image cap">' +
-                                '<div class="card-body">' +
-                                    '<div class="input-group">' +
-                                        '<input class="card-title" type="text" id="name" onblur="checkInput(this)" required />' +
-                                        '<label for="name">Name</label>' +
-                                    '</div>' +
-                                '</div>' +
-                            '</div>';
+    products.forEach(function (product) {
+        addNewProduct(product);
+    });
 
-        $(e).before(newElement);
+    function addNewProduct(product = {_id: new Date().getTime(), image: '/res/image-not-found.jpg', name: 'no name', price: 0.0, new: true}) {
+
+        console.log(product);
+
+        delete product.new;
+
+        const newElement = '' +
+            '<div class="card text-white bg-dark" onchange="changeProduct(this, &quot;' + product._id + '&quot;)">' +
+                '<img id="image' + product._id + '" class="card-img-top" src="' + product.image + '" alt="Card image cap">' +
+                '<div class="card-body">' +
+                    '<div class="input-group">' +
+                        '<input id="file' + product._id + '" class="active" type="file" autocomplete="off" onblur="checkInput(this)" onchange="inputOnChange(&quot;' + product._id + '&quot;);" />' +
+                        '<input class="active" type="hidden" id="logo' + product._id + '" name="image" />' +
+                        '<label for="logoPath' + product._id + '">Logo</label>' +
+                    '</div>' +
+                    '<div class="input-group">' +
+                        '<input id="name' + product._id + '" class="card-title active" type="text" onblur="checkInput(this)" value="' + product.name + '" />' +
+                        '<label for="name' + product._id + '">Name</label>' +
+                    '</div>' +
+                    '<div class="input-group">' +
+                        '<input id="price' + product._id + '" class="card-title active" type="number" step="any" onblur="checkInput(this)" value="' + product.price + '" />' +
+                        '<label for="price' + product._id + '">Price</label>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+
+        console.log(newElement);
+
+        $("#beforeButton").before(newElement);
+
+        products.push(product);
     }
 
     //Array append + onchange each input... bleah
 
     function inputOnChange (id) {
-        const evt = document.getElementById('input' + id);
+        const evt = document.getElementById('file' + id);
 
         var tgt = evt.target || window.event.srcElement,
             files = tgt.files;
@@ -75,6 +89,27 @@
             // fallback -- perhaps submit the input to an iframe and temporarily store
             // them on the server until the user's session ends.
         }
+    }
+
+    function changeProduct(e, id) {
+        var index = products.findIndex(function(element) {
+            return element._id == id;
+        });
+
+        products[index].changed = true;
+        products[index].image = $(e).find('#image' + id)[0].src;
+        products[index].name = $(e).find('#name' + id)[0].value;
+        products[index].price = $(e).find('#price' + id)[0].value;
+
+        console.log(products);
+    }
+
+    function saveProducts() {
+        $('#productsData').val(JSON.stringify(products));
+
+        console.log($('#productsData').val());
+
+        $('#formSaveProducts').submit();
     }
 </script>
 </html>

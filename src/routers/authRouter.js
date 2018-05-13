@@ -14,6 +14,8 @@ var router = function () {
         .post(function (req, res) {
             var user = req.body;
 
+            user.type = 'user';
+
             database.saveUser(user, function (response) {
                 console.log('After sign up response:', response);
 
