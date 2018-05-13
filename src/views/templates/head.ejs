@@ -12,9 +12,15 @@
 <script>
 	$(document).ready(function() {
 		$('body').append('' +
-				'<a class="btn btn-danger" href="/auth/logout">' +
+				'<a id="logoutButton" class="btn btn-danger" href="/auth/logout">' +
 					'LOGOUT' +
 				'</a>'
 			);
-	})
+
+		$("#logoutButton").on('click', function() {
+			FB.logout(function(response) {
+			  // user is now logged out
+			});
+		});
+	});
 </script>
