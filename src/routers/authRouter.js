@@ -58,6 +58,16 @@ var router = function () {
             });
         });
 
+    authRouter.route('/logout')
+        .get(function (req, res) {
+            delete req.session.user;
+            res.redirect('/');
+        })
+        .post(function (req, res) {
+            delete req.session.user;
+            res.redirect('/');
+        });
+
     return authRouter;
 };
 
