@@ -43,10 +43,12 @@ function checkLoginState() {
 
             if(FBstatus === 'connected'){
                 FB.logout(function(response) {
+
+                    $.post( "/auth/logout");
+                    window.top.location = "https://shop-shoffy.com/";
                 });
             }
 
-            $.post( "/auth/logout");
         });
     };
 
