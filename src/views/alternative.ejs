@@ -25,12 +25,12 @@
 	            </div>
 
 	            <div class="row">
-	            	<form id="formNewOrder" class="d-none" action="/order/review" method="post">
+	            	<form id="formNewOrder" class="d-none" action="/order/<%= order._id %>/basket/<%= productUnavID %>/alternative" method="post">
 	            		<input id="inputBasket" type="hidden" name="basket" />
 	            		<input type="hidden" name="shopID" value="<%= shop._id %>" />
 	            	</form>
 				    <button id="basketButton" class="btn btn-primary col-12 basketButton" onclick="sendOrder();">
-				    	Go to checkout
+				    	Update order
 				    </button>
 				</div>
 			</div>

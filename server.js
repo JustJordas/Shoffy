@@ -10,6 +10,7 @@ const driverRouter = require('./src/routers/driverRouter')();
 const mapRouter = require('./src/routers/mapRouter')();
 const shopRouter = require('./src/routers/shopRouter')();
 const orderRouter = require('./src/routers/orderRouter')();
+const chatRouter = require('./src/routers/chatRouter')();
 
 const util = require('util');
 
@@ -40,6 +41,7 @@ app.use('/driver', driverRouter);
 app.use('/shop', shopRouter);
 app.use('/map', mapRouter);
 app.use('/order', orderRouter);
+app.use('/chat', chatRouter);
 
 // Landing page
 app.get('/', function (req, res) {

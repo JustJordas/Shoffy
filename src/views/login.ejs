@@ -11,65 +11,9 @@
     <script type="text/javascript" src="/js/login.js"></script>
 </head>
 <body>    
+<% include templates/facebook.ejs %>
 <script>
-        function statusChangeCallback(response) {
-            console.log('statusChangeCallback');
-            console.log(response);
 
-            if (response.status === 'connected') {            
-                fbLogin();
-            }
-        }
-
-        function checkLoginState() {
-            FB.getLoginStatus(function(response) {
-                statusChangeCallback(response);
-            });
-        }
-
-        window.fbAsyncInit = function() {
-            FB.init({
-                appId      : '2126043384293790',
-                cookie     : true,
-                xfbml      : true,
-                status     : true,
-                version    : 'v2.12'
-            });
-
-            FB.getLoginStatus(function(response) {
-                statusChangeCallback(response);
-                  console.log(response);
-            });
-
-            FB.AppEvents.logPageView();
-        };
-
-        (function(d, s, id){
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) {return;}
-            js = d.createElement(s); js.id = id;
-            js.src = "https://connect.facebook.net/en_US/sdk.js";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
-
-
-function fbLogin() {
-    console.log('Welcome!  Fetching your information.... ');
-    FB.api('/me', {
-        fields: 'first_name, last_name, email'
-    }, function(response) {
-        console.log('Successful login for: ' + response.first_name);
-        console.log('Full response:', response);
-
-        var xhttp = new XMLHttpRequest();
-
-        xhttp.open("POST", "/auth/login", true);
-        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send("type=fb&email=" + encodeURIComponent(response.email) + "&fbid=" + encodeURIComponent(response.id) + "&firstName=" + encodeURIComponent(response.first_name) + "&lastName=" + encodeURIComponent(response.last_name));
-
-        window.top.location = "https://shop-shoffy.com/";
-    });
-}
     </script>
     <script>/*
       function onSignIn(googleUser) {
@@ -113,7 +57,7 @@ function fbLogin() {
                 <!--
                     <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="true"></div>
                 -->
-                <fb:login-button scope="public_profile,email" onlogin="checkLoginState();" class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="true">
+                <fb:login-button scope="public_profile,email" onlogin="checkLoginState();" onlogout="fbLogout()" class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="true">
                 </fb:login-button>
                 <!--
                 <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
@@ -122,6 +66,8 @@ function fbLogin() {
         </div>
     </div>
 </body>
+
+<% include templates/footer.ejs %>
 <script>
 
 

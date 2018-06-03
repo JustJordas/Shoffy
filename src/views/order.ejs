@@ -4,10 +4,12 @@
 <head>
     <% include templates/head.ejs %>
         <link rel="stylesheet" href="/css/login2.css" />
+        <link rel="stylesheet" href="/css/chat.css" />
         <script type="text/javascript" src="/js/login.js"></script>
 </head>
 
-<body>
+<body>    
+<% include templates/facebook.ejs %>
     <div class="container">
         <img src="/res/firstBlurred.jpg" class="mx-auto d-block" style="height: 100vh; min-height: 100vh">
         <div class="center">
@@ -21,16 +23,34 @@
                     </button>
                 </div>
                 <div class="row">
-                    <form id="formCompleteOrder" class="col-12" action="/order/<%= order._id %>/completed" method="post">
-                        <button type="submit" class="btn btn-primary col-12 basketButton">
-                            Mark as completed
-                        </button>
-                    </form>
+                    <div class="chat">
+                        <div class="card">
+                            <div id="messagesCardBody" class="card-body">
+                                <p class="card-text">Awesome</p>
+                            </div>
+                        </div>
+                        <form id="sendMessageForm" onsubmit="sendMessage(); return false;">
+                             <div class="input-group">
+                                <input id="sendMessageInput" type="text" name="text" autocomplete="off" />
+                            </div>
+                        </form>
+                    </div>
                 </div>
+                <% if(user.type == 'driver') { %>
+                    <div class="row">
+                        <form id="formCompleteOrder" class="col-12" action="/order/<%= order._id %>/completed" method="post">
+                            <button tyxpe="submit" class="btn btn-primary col-12 basketButton">
+                                Mark as completed
+                            </button>
+                        </form>
+                    </div>
+                <% } %>
             </div>
         </div>
     </div>
 </body>
+
+<% include templates/footer.ejs %>
 <script>
 var products = [];
 products = <%- JSON.stringify(order.basket) %>;
@@ -39,7 +59,9 @@ products = <%- JSON.stringify(order.basket) %>;
 var basket = {};
 
 Object.keys(products).forEach(function (productID) {
-    addNewProduct(products[productID]);
+    if(products[productID].available == true) {
+        addNewProduct(products[productID]);
+    }
 });
 
 
@@ -51,35 +73,42 @@ function addNewProduct(product = { _id: new Date().getTime(), image: '/res/image
 
     const newElement = '' +
         '<div id="group' + product._id + '" class="card text-white bg-dark">' +
-        '<img id="image' + product._id + '" class="card-img-top" src="' + product.image + '" alt="Card image cap">' +
-        '<div class="card-body">' +
-        '<div class="input-group">' +
-        '<input id="name' + product._id + '" class="card-title active" type="text" onblur="checkInput(this)" value="' + product.name + '" disabled />' +
-        '<label for="name' + product._id + '">Name</label>' +
-        '</div>' +
-        '<div class="input-group">' +
-        '<input id="price' + product._id + '" class="card-title active" type="number" step="any" onblur="checkInput(this)" value="' + product.price + '" disabled/>' +
-        '<label for="price' + product._id + '">Price</label>' +
-        '</div>' +
-        '<div class="input-group">' +
-        '<input id="amount' + product._id + '" class="card-title active" type="number" step="1" onblur="checkInput(this)" value="' + product.quantity + '" />' +
-        '<label for="amount' + product._id + '">Amount</label>' +
-        '</div>' +
-        '</div>' +
+            '<img id="image' + product._id + '" class="card-img-top" src="' + product.image + '" alt="Card image cap">' +
+            '<div class="card-body">' +
+                '<div class="input-group">' +
+                    '<input id="name' + product._id + '" class="card-title active" type="text" onblur="checkInput(this)" value="' + product.name + '" disabled />' +
+                    '<label for="name' + product._id + '">Name</label>' +
+                '</div>' +
+                '<div class="input-group">' +
+                    '<input id="price' + product._id + '" class="card-title active" type="number" step="any" onblur="checkInput(this)" value="' + product.price + '" disabled/>' +
+                    '<label for="price' + product._id + '">Price</label>' +
+                '</div>' +
+                '<div class="input-group">' +
+                    '<input id="amount' + product._id + '" class="card-title active" type="number" step="1" onblur="checkInput(this)" value="' + product.quantity + '" disabled/>' +
+                    '<label for="amount' + product._id + '">Amount</label>' +
+                '</div>' +
+                <% if (user.type == 'driver') { %>
+                    '<button type="button" class="btn btn-danger col-12" onclick="markAsUnav(&quot;' + product._id + '&quot;)">' +
+                    'Mark as unavailable' +
+                    '</button>' +
+                <% } %>
+            '</div>' +
         '</div>';
 
     //console.log(newElement);
 
     $("#beforeButton").before(newElement);
 
-    $("#group" + product._id).on('click', function () {
-        removeFromBasket(product._id)
-    });
+    <% if(user.type == 'driver') { %> 
+        $("#group" + product._id).on('click', function () {
+            removeFromBasket(product._id)
+        });
 
-    $("#group" + product._id).on('contextmenu', function (e) {
-        e.preventDefault();
-        addToBasket(product._id)
-    });
+        $("#group" + product._id).on('contextmenu', function (e) {
+            e.preventDefault();
+            addToBasket(product._id)
+        });
+    <% } %>
 
     basket[product._id] = product.quantity;
 }
@@ -134,6 +163,59 @@ function removeFromBasket(id) {
 function sendOrder() {
     $("#inputBasket").val(JSON.stringify(basket));
     $("#formNewOrder").submit();
+}
+
+function markAsUnav(productID) {
+    var order = <%- JSON.stringify(order) %>
+    $.post('/order/<%= order._id %>/basket/' + productID + '/update', {
+        update: {
+            available: false,
+            price: parseFloat(order.price) - parseFloat(order.basket[productID].price) * parseInt(order.basket[productID].quantity)
+        }
+    });
+
+    $("#group" + productID).hide();
+
+    sendMessage('Item unavailable: ' + productID + '.' + 
+            '<a href="/order/<%= order._id %>/basket/' + productID + '/alternative" style="color: blue; cursor: hand;">' +
+            ' Click here ' +
+            '</a>' +
+        'for alternative!');
+}
+
+setInterval(function() {
+    $.post('/chat/<%= order._id %>/getAll', {
+        author: '<%= user._id %>',
+        message: 'Message'
+    }, function(data) {
+        //console.log(data);
+        $('#messagesCardBody').empty();
+        data.forEach(function (datum) {
+            $('#messagesCardBody').append('<p class="card-text">' + datum.authorFirstName + ': ' + datum.message + '</p>');
+        });
+    });
+
+    var objDiv = document.getElementById("messagesCardBody");
+    objDiv.scrollTop = objDiv.scrollHeight;
+}, 1000);
+
+function sendMessage(message = null) {
+    var data = {
+        authorID: '<%= user._id %>',
+        authorFirstName: '<%= user.firstName %>',
+        message: message || $('#sendMessageInput').val()
+    }
+
+    $.post('/chat/<%= order._id %>/new', data);
+
+    $('#messagesCardBody').append('<p class="card-text">' + data.authorFirstName + ': ' + data.message + '</p>');
+    
+    var objDiv = document.getElementById("messagesCardBody");
+    objDiv.scrollTop = objDiv.scrollHeight;
+
+    if(!message) {
+        $('#sendMessageInput').val('');
+    }
 }
 
 //Array append + onchange each input... bleah

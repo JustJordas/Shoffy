@@ -1,0 +1,79 @@
+<script>
+    function statusChangeCallback(response) {
+    console.log('statusChangeCallback');
+    console.log(response);
+
+    if (response.status === 'connected') {            
+        fbLogin();
+    } else if (!response.authResponse) {
+        FB.logout(function(response) {
+            $.post( "/auth/logout");
+        });
+    }
+}
+
+function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+    });
+}
+
+    window.fbAsyncInit = function() {
+        FB.init({
+            appId      : '2126043384293790',
+            cookie     : true,
+            xfbml      : true,
+            status     : true,
+            version    : 'v2.12'
+        });
+
+        var FBstatus = '';
+
+        FB.getLoginStatus(function(response) {
+            statusChangeCallback(response);
+            console.log(response);
+
+            FBstatus = response.status;
+        });
+
+        FB.AppEvents.logPageView();
+
+        $('#logoutButton').on('click', function() {
+            console.log('Sometimes');
+
+            if(FBstatus === 'connected'){
+                FB.logout(function(response) {
+                });
+            }
+
+            $.post( "/auth/logout");
+        });
+    };
+
+    (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+
+function fbLogin() {
+    console.log('Welcome!  Fetching your information.... ');
+    FB.api('/me', {
+        fields: 'first_name, last_name, email'
+    }, function(response) {
+        console.log('Successful login for: ' + response.first_name);
+        console.log('Full response:', response);
+
+        var xhttp = new XMLHttpRequest();
+
+        xhttp.open("POST", "/auth/login", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send("type=fb&email=" + encodeURIComponent(response.email) + "&fbid=" + encodeURIComponent(response.id) + "&firstName=" + encodeURIComponent(response.first_name) + "&lastName=" + encodeURIComponent(response.last_name));
+
+        window.top.location = "https://shop-shoffy.com/";
+    });
+}
+</script>

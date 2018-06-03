@@ -427,6 +427,48 @@ const database = function () {
         });
     }
 
+    const saveMessage = function (message, callback) {
+        mongodb.connect(url, function (err, client) {
+            if (err) {
+                console.log('Error saving message', err);
+                throw err;
+            }
+
+            const db = client.db('shoffy');
+            const collection = db.collection('chats');
+
+            collection.insertOne(message, function (err, result) {
+                var response = {
+                    state: false
+                }
+
+                if (!err) {
+                    response.state = true;
+                    response.object = result.ops[0];
+
+                    return callback(response);
+                } else {
+                    throw err;
+                    return callback(response);
+                }
+            });
+        });
+    }
+
+
+    const getMessages = function (filter, callback) {
+        mongodb.connect(url, function (err, client) {
+            const db = client.db('shoffy');
+
+            const collection = db.collection('chats');
+
+            collection.find(filter).toArray(function (err, results) {
+                return callback(results);
+            });
+        });
+    }
+
+
     return {
         saveUser: saveUser,
         loginUser: loginUser,
@@ -440,7 +482,9 @@ const database = function () {
         updateProducts: updateProducts,
         saveOrder: saveOrder,
         getOrders: getOrders,
-        updateOrders: updateOrders
+        updateOrders: updateOrders,
+        saveMessage: saveMessage,
+        getMessages: getMessages
     }
 }
 

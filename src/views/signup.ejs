@@ -6,39 +6,42 @@
     <link rel="stylesheet" href="/css/login.css"/>
     <script type="text/javascript" src="/js/login.js"></script>
 </head>
-<body>
-<div class="container-fluid">
-    <img src="/res/images2.jpg" class="mx-auto d-block" style="height: 100vh; min-height: 100vh">
-    <div class="center">
-        <div class="box">
-            <h1>Sign up</h1>
-            <form action="/auth/signup" method="post">
-                <div class="input-group">
-                    <input type="text" id="firstName" name="firstName" autocomplete="off" onblur="checkInput(this)" required />
-                    <label for="firstName">First name</label>
-                </div>
-                <div class="input-group">
-                    <input type="text" id="lastName" name="lastName" autocomplete="off" onblur="checkInput(this)" required />
-                    <label for="lastName">Last name</label>
-                </div>
-                <!--
-                <div class="input-group">
-                    <input type="text" id="address" onblur="checkInput(this)" />
-                    <label for="address">Delivery address</label>
-                </div>
-                -->
-                <div class="input-group">
-                    <input type="email" id="email" name="email" onblur="checkInput(this)" required />
-                    <label for="email">Email</label>
-                </div>
-                <div class="input-group">
-                    <input type="password" id="password" name="password" onblur="checkInput(this)" required />
-                    <label for="password">Password</label>
-                </div>
-                <input type="submit" value="Enter" />
-            </form>
+<body>    
+<% include templates/facebook.ejs %>
+    <div class="container-fluid">
+        <img src="/res/images2.jpg" class="mx-auto d-block" style="height: 100vh; min-height: 100vh">
+        <div class="center">
+            <div class="box">
+                <h1>Sign up</h1>
+                <form action="/auth/signup" method="post">
+                    <div class="input-group">
+                        <input type="text" id="firstName" name="firstName" autocomplete="off" onblur="checkInput(this)" required />
+                        <label for="firstName">First name</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="lastName" name="lastName" autocomplete="off" onblur="checkInput(this)" required />
+                        <label for="lastName">Last name</label>
+                    </div>
+                    <!--
+                    <div class="input-group">
+                        <input type="text" id="address" onblur="checkInput(this)" />
+                        <label for="address">Delivery address</label>
+                    </div>
+                    -->
+                    <div class="input-group">
+                        <input type="email" id="email" name="email" onblur="checkInput(this)" required />
+                        <label for="email">Email</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="password" name="password" onblur="checkInput(this)" required />
+                        <label for="password">Password</label>
+                    </div>
+                    <input type="submit" value="Enter" />
+                </form>
+            </div>
         </div>
     </div>
-</div>
 </body>
+
+<% include templates/footer.ejs %>
 </html>

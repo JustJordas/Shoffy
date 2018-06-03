@@ -1,0 +1,79 @@
+*,
+*:before,
+*:after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none !important;
+  color: inherit;
+}
+
+a:hover {
+  color: inherit;
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+  flex-direction: column;
+  justify-content: center;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #a06060;
+  background: linear-gradient(130deg, #a06060 20%, #aaa 100%) no-repeat center center fixed;
+}
+
+.center {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  max-width: 400px;
+}
+
+.outterBox {
+  position: absolute;
+  width: 100%;
+  margin: 0 auto;
+  bottom: 0vh;
+  padding: 10px;
+  max-width: 400px;
+  border-radius: 2px;
+  max-height: 100vh;
+  height: 100vh;
+  overflow-y: scroll;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.box {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  padding: 10px;
+  max-width: 400px;
+  border-radius: 2px;
+  max-height: 80vh;
+  overflow-y: scroll;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.card {
+  background: transparent;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+  /* remove scrollbar space */
+  background: transparent;
+  /* optional: just make scrollbar invisible */
+}
+
+h1 {
+  font-weight: 100;
+  letter-spacing: 1px;
+  margin: 10px 0 20px 10px;
+}

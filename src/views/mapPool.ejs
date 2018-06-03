@@ -21,7 +21,8 @@
 		}
 	</style>
 </head>
-<body>
+<body>    
+<% include templates/facebook.ejs %>
 	<div id="map"></div>
 	<script>
 		// Note: This example requires that you consent to location sharing when
@@ -110,7 +111,7 @@
 			}
 
 			google.maps.event.addListener(marker, 'click', function() {
-				infoWindow.setContent('<a href="/order/' + order._id + '">' + order.shop.name + '</a>');
+				infoWindow.setContent('<a href="/order/' + order._id + '/accept">' + order.shop.name + '</a>');
 				infoWindow.open(map, this);
 
 				Object.keys(trips).forEach(function(orderID) {
@@ -159,6 +160,8 @@
 		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDHfohgtdHeSqkM28bLbqGld5Hw3U_0qTA&libraries=places&callback=initMap">
 	</script>
 </body>
+
+<% include templates/footer.ejs %>
 <script>
 	var orders = <%- JSON.stringify(orders) %>;
 

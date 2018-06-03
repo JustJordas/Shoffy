@@ -3,24 +3,64 @@
 
 <head>
     <% include templates/head.ejs %>
-    <link rel="stylesheet" href="/css/login.css" />
+    <link rel="stylesheet" href="/css/landing.css" />
     <script type="text/javascript" src="/js/login.js"></script>
 </head>
 
-<body>
-    <div class="container-fluid">
+<% var currentOrder = null; %>
+<% var pastOrders = []; %>
+<% orders.forEach(function (order) { %>
+    <% if(order.status != 'completed') { %>
+        <% currentOrder = order; %>
+    <% } else { %>
+        <% pastOrders.push(order); %>
+    <% } %>
+<% }); %>
+
+<body>    
+<% include templates/facebook.ejs %>
+    <div class="container-fluid">        
         <img src="/res/firstBlurred.jpg" class="mx-auto d-block" style="height: 100vh; min-height: 100vh">
         <div class="center">
-            <div class="box">
-                <a href="/map" >
-                    <h1>Hello, <%= user.firstName %> </h1>
-                </a>
-                <a href="/user/profile">
-                    Profile
-                </a>
+            <div class="outterBox">
+                <h1>Current order:</h5>
+                <div class="box">
+                    <% if(currentOrder) { %>
+                        <div class="card">
+                            <a href="/order/<%= currentOrder._id %>">
+                                <div class="card-body">
+                                    <p class="card-text"><%= currentOrder._id %></p>
+                                </div>
+                            </a>
+                        </div>
+                    <% } else { %>
+                        <div class="card">
+                            <a href='/user/newOrder'>
+                                <div class="card-body">
+                                    <p class="card-text">Order now</p>
+                                </div>
+                            </a>
+                        </div>
+                    <% } %>
+                </div>
+
+                <h1>Past order:</h5>
+                <div class="box">
+                    <% pastOrders.forEach(function(pastOrder) { %>
+                        <div class="card">
+                            <a href="/order/<%= pastOrder._id %>">
+                                <div class="card-body">
+                                    <p class="card-text"><%= pastOrder._id %></p>  
+                                </div>
+                            </a>
+                        </div>
+                    <% }); %>                    
+                </div>
             </div>
         </div>
     </div>
 </body>
 
+
+<% include templates/footer.ejs %>
 </html>
