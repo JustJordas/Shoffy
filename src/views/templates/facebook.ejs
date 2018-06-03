@@ -1,5 +1,5 @@
 <script>
-    function statusChangeCallback(response) {
+function statusChangeCallback(response) {
     console.log('statusChangeCallback');
     console.log(response);
 
@@ -73,7 +73,7 @@ function fbLogin() {
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("type=fb&email=" + encodeURIComponent(response.email) + "&fbid=" + encodeURIComponent(response.id) + "&firstName=" + encodeURIComponent(response.first_name) + "&lastName=" + encodeURIComponent(response.last_name));
 
-        window.top.location = "https://shop-shoffy.com/";
+        //window.top.location = "https://shop-shoffy.com/";
     });
 }
 </script>
