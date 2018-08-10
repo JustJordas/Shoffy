@@ -332,6 +332,107 @@ var router = function() {
             });
         });
 
+    orderRouter.route('/:orderID/feedback')
+        .all(function(req, res, next) {
+            if (!(req.session.user && req.session.user.type == 'user')) {
+                res.redirect('/auth/login');
+            } else {
+                next();
+            }
+        })
+        .get(function(req, res) {
+
+            database.getOrders({
+                _id: objectID(req.params.orderID)
+            }, function(orders) {
+                if (orders.length == 1) {
+                    const order = orders[0];
+                    const driver = order.driver;
+
+                    res.render('feedback', {
+                        user: req.session.user,
+                        driver: driver,
+                        order: order
+                    });
+                } else {
+                    res.render('error');
+                }
+            });
+        })
+        .post(function(req, res) {
+            console.log(req.body);
+            database.updateOrders({
+                _id: objectID(req.params.orderID)
+            }, {
+                feedback: req.body.feedback
+            }, function(response) {
+                if (response.state == true) {
+                    res.send(true);
+                } else {
+                    res.send(false);
+                }
+            });
+        });
+
+    orderRouter.route('/:orderID/updateDriverLocation')
+        .all(function(req, res, next) {
+            if (!(req.session.user && req.session.user.type == 'driver')) {
+                res.redirect('/auth/login');
+            } else {
+                next();
+            }
+        })
+        .post(function(req, res) {
+            var location = req.body.location;
+
+            location.lat = parseFloat(location.lat)
+            location.lng = parseFloat(location.lng)
+
+            database.updateOrders({
+                _id: objectID(req.params.orderID)
+            }, {
+                'driver.location': location
+            }, function(response) {
+                if (response.state == true) {
+                    res.send(true);
+                } else {
+                    res.send(false);
+                }
+            });
+        });
+
+    orderRouter.route('/:orderID/driverLocation')
+        .all(function(req, res, next) {
+            if (!(req.session.user && req.session.user.type == 'user')) {
+                res.redirect('/auth/login');
+            } else {
+                next();
+            }
+        })
+        .get(function(req, res) {
+            database.getOrders({
+                _id: objectID(req.params.orderID)
+            }, function(orders) {
+                if (orders.length == 1) {
+                    const order = orders[0];
+
+                    if (order.driver) {
+                        const driver = order.driver;
+
+                        res.render('checkDriverLocation', {
+                            user: req.session.user,
+                            driver: driver,
+                            order: order
+                        });
+                    } else {
+                        res.render('error');
+                    }
+                } else {
+                    res.render('error');
+                }
+            })
+        })
+
     return orderRouter;
 };
 

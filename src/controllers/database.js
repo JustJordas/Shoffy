@@ -8,10 +8,10 @@ const secret = 'Amazing';
 //Database link
 const url = 'mongodb://admin:awesome@ds161939.mlab.com:61939/shoffy';
 
-const database = function () {
+const database = function() {
 
-    const saveUser = function (user, callback) {
-        mongodb.connect(url, function (err, client) {
+    const saveUser = function(user, callback) {
+        mongodb.connect(url, function(err, client) {
             if (err) {
                 console.log('Error saving user', err);
                 throw err;
@@ -27,7 +27,7 @@ const database = function () {
 
             collection.findOne({
                 email: user.email.toLowerCase()
-            }, function (err, result) {
+            }, function(err, result) {
                 if (err) {
                     throw err;
                 }
@@ -37,7 +37,7 @@ const database = function () {
                 }
 
                 if (!result) {
-                    collection.insertOne(user, function (err, result) {
+                    collection.insertOne(user, function(err, result) {
                         if (!err) {
                             response.state = true;
                             response.object = result.ops[0];
@@ -57,8 +57,8 @@ const database = function () {
         });
     }
 
-    const loginUser = function (user, callback) {
-        mongodb.connect(url, function (err, client) {
+    const loginUser = function(user, callback) {
+        mongodb.connect(url, function(err, client) {
             if (err) {
                 console.log('Error loging user', err);
                 throw err;
@@ -77,7 +77,7 @@ const database = function () {
                 collection.findOne({
                     email: user.email,
                     password: user.password
-                }, function (err, result) {
+                }, function(err, result) {
                     if (err) {
                         throw err;
                     }
@@ -101,7 +101,7 @@ const database = function () {
                 delete user.type;
                 collection.findOne({
                     email: user.email
-                }, function (err, result) {
+                }, function(err, result) {
                     if (err) {
                         throw err;
                     }
@@ -129,7 +129,7 @@ const database = function () {
                                     firstName: user.firstName,
                                     lastName: user.lastName
                                 }
-                            }, function (err, responseUpdate) {
+                            }, function(err, responseUpdate) {
                                 if (err) {
                                     throw err;
                                 }
@@ -148,7 +148,7 @@ const database = function () {
                             });
                         }
                     } else {
-                        collection.insertOne(user, function (err, result) {
+                        collection.insertOne(user, function(err, result) {
                             if (!err) {
                                 response.state = true;
                                 response.object = result.ops[0];
@@ -171,8 +171,8 @@ const database = function () {
         });
     }
 
-    const updateUser = function (filter, update, callback) {
-        mongodb.connect(url, function (err, client) {
+    const updateUser = function(filter, update, callback) {
+        mongodb.connect(url, function(err, client) {
             const db = client.db('shoffy');
 
             const collection = db.collection('users');
@@ -193,7 +193,7 @@ const database = function () {
 
             collection.updateOne(filter, {
                 '$set': update
-            }, function (err, result) {
+            }, function(err, result) {
                 var response = {
                     state: false
                 }
@@ -213,20 +213,20 @@ const database = function () {
         });
     }
 
-    const getUsers = function (filter, callback) {
-        mongodb.connect(url, function (err, client) {
+    const getUsers = function(filter, callback) {
+        mongodb.connect(url, function(err, client) {
             const db = client.db('shoffy');
 
             const collection = db.collection('users');
 
-            collection.find(filter).toArray(function (err, results) {
+            collection.find(filter).toArray(function(err, results) {
                 return callback(results);
             });
         });
     }
 
-    const saveShop = function (shop, callback) {
-        mongodb.connect(url, function (err, client) {
+    const saveShop = function(shop, callback) {
+        mongodb.connect(url, function(err, client) {
             if (err) {
                 console.log('Error saving shop', err);
                 throw err;
@@ -235,7 +235,7 @@ const database = function () {
             const db = client.db('shoffy');
             const collection = db.collection('shops');
 
-            collection.insertOne(shop, function (err, result) {
+            collection.insertOne(shop, function(err, result) {
                 var response = {
                     state: false
                 }
@@ -253,27 +253,27 @@ const database = function () {
         });
     }
 
-    const getShops = function (filter, callback) {
-        mongodb.connect(url, function (err, client) {
+    const getShops = function(filter, callback) {
+        mongodb.connect(url, function(err, client) {
             const db = client.db('shoffy');
 
             const collection = db.collection('shops');
 
-            collection.find(filter).toArray(function (err, results) {
+            collection.find(filter).toArray(function(err, results) {
                 return callback(results);
             });
         });
     }
 
-    const updateShops = function (filter, update, callback) {
-        mongodb.connect(url, function (err, client) {
+    const updateShops = function(filter, update, callback) {
+        mongodb.connect(url, function(err, client) {
             const db = client.db('shoffy');
 
             const collection = db.collection('shops');
 
             collection.updateOne(filter, {
                 '$set': update
-            }, function (err, result) {
+            }, function(err, result) {
                 var response = {
                     state: false
                 }
@@ -291,8 +291,8 @@ const database = function () {
         });
     }
 
-    const saveProduct = function (product, callback) {
-        mongodb.connect(url, function (err, client) {
+    const saveProduct = function(product, callback) {
+        mongodb.connect(url, function(err, client) {
             if (err) {
                 console.log('Error saving product', err);
                 throw err;
@@ -301,7 +301,7 @@ const database = function () {
             const db = client.db('shoffy');
             const collection = db.collection('products');
 
-            collection.insertOne(product, function (err, result) {
+            collection.insertOne(product, function(err, result) {
                 var response = {
                     state: false
                 }
@@ -319,20 +319,20 @@ const database = function () {
         });
     }
 
-    const getProducts = function (filter, callback) {
-        mongodb.connect(url, function (err, client) {
+    const getProducts = function(filter, callback) {
+        mongodb.connect(url, function(err, client) {
             const db = client.db('shoffy');
 
             const collection = db.collection('products');
 
-            collection.find(filter).toArray(function (err, results) {
+            collection.find(filter).toArray(function(err, results) {
                 return callback(results);
             });
         });
     }
 
-    const updateProducts = function (filter, update, callback) {
-        mongodb.connect(url, function (err, client) {
+    const updateProducts = function(filter, update, callback) {
+        mongodb.connect(url, function(err, client) {
             const db = client.db('shoffy');
 
             const collection = db.collection('products');
@@ -341,7 +341,7 @@ const database = function () {
                 '$set': update
             }, {
                 upsert: true
-            }, function (err, result) {
+            }, function(err, result) {
                 var response = {
                     state: false
                 }
@@ -359,8 +359,8 @@ const database = function () {
         });
     }
 
-    const saveOrder = function (order, callback) {
-        mongodb.connect(url, function (err, client) {
+    const saveOrder = function(order, callback) {
+        mongodb.connect(url, function(err, client) {
             if (err) {
                 console.log('Error saving order', err);
                 throw err;
@@ -369,7 +369,7 @@ const database = function () {
             const db = client.db('shoffy');
             const collection = db.collection('orders');
 
-            collection.insertOne(order, function (err, result) {
+            collection.insertOne(order, function(err, result) {
                 var response = {
                     state: false
                 }
@@ -387,20 +387,20 @@ const database = function () {
         });
     }
 
-    const getOrders = function (filter, callback) {
-        mongodb.connect(url, function (err, client) {
+    const getOrders = function(filter, callback) {
+        mongodb.connect(url, function(err, client) {
             const db = client.db('shoffy');
 
             const collection = db.collection('orders');
 
-            collection.find(filter).toArray(function (err, results) {
+            collection.find(filter).toArray(function(err, results) {
                 return callback(results);
             });
         });
     }
 
-    const updateOrders = function (filter, update, callback) {
-        mongodb.connect(url, function (err, client) {
+    const updateOrders = function(filter, update, callback) {
+        mongodb.connect(url, function(err, client) {
             const db = client.db('shoffy');
 
             const collection = db.collection('orders');
@@ -409,7 +409,7 @@ const database = function () {
                 '$set': update
             }, {
                 upsert: true
-            }, function (err, result) {
+            }, function(err, result) {
                 var response = {
                     state: false
                 }
@@ -427,8 +427,8 @@ const database = function () {
         });
     }
 
-    const saveMessage = function (message, callback) {
-        mongodb.connect(url, function (err, client) {
+    const saveMessage = function(message, callback) {
+        mongodb.connect(url, function(err, client) {
             if (err) {
                 console.log('Error saving message', err);
                 throw err;
@@ -437,7 +437,7 @@ const database = function () {
             const db = client.db('shoffy');
             const collection = db.collection('chats');
 
-            collection.insertOne(message, function (err, result) {
+            collection.insertOne(message, function(err, result) {
                 var response = {
                     state: false
                 }
@@ -456,13 +456,13 @@ const database = function () {
     }
 
 
-    const getMessages = function (filter, callback) {
-        mongodb.connect(url, function (err, client) {
+    const getMessages = function(filter, callback) {
+        mongodb.connect(url, function(err, client) {
             const db = client.db('shoffy');
 
             const collection = db.collection('chats');
 
-            collection.find(filter).toArray(function (err, results) {
+            collection.find(filter).toArray(function(err, results) {
                 return callback(results);
             });
         });

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <% include templates/head.ejs %>
+    <link rel="stylesheet" href="/css/landing.css" />
+    <script type="text/javascript" src="/js/login.js"></script>
+</head>
+
+<style>
+    .rating {
+        cursor: pointer;
+    }
+    .rating > span {
+        display: inline-block;
+        position: relative;
+        width: 1.1em;
+    }
+/*
+    .rating > span:hover:before,
+    .rating > span:hover ~ span:before {
+        content: "\2605";
+        position: absolute;
+        color: yellow;
+    }*/
+</style>
+
+<% include templates/nav.ejs %>    
+    <% include templates/facebook.ejs %>
+    <div class="container-fluid">        
+        <img src="/res/image_yellow.jpg" class="mx-auto d-block" style="height: 100vh; min-height: 100vh">
+        <div class="center">
+            <div class="outterBox">
+                <h1>Review order</h1>
+                <div class="box">
+                    <div class="card">
+                        <h5 class="card-title">Please rate our service</h5>
+                        <div class="card-body">
+                            <textarea id="text" name="text" style="width: 100%; background-color: transparent; color: white;" onblur="checkInput(this)" onchange="updateText();"></textarea>
+                            <div class="rating float-right" style="font-size:2rem; display: inline-block" onmouseleave="starsLeft();">
+                                <% for(var i = 0; i < 5; i ++) { %>
+                                    <span class="star" id="star<%= i %>" onmouseenter="starHovered('<%= i %>');" onclick="updateRating('<%= i %>');" >☆</span>
+                                <% } %>
+                                <!--
+                                    <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
+                                -->
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="updateFeedback();">
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+<% include templates/footer.ejs %>
+
+<script>
+    var rating = 0;
+    var text = "";
+
+    function updateText() {
+        text = $('#text').val();
+    }
+
+    function starHovered (index) {
+        $('.star').css('content', '\2606');
+        $('.star').css('color', 'black');
+
+        for(var i = 0; i <= index; i ++) {
+            $('#star' + i).css('content', '\2605');
+            $('#star' + i).css('color', 'yellow');
+        }
+    }
+
+    function updateRating (index) {
+        console.log('stuff');
+        $('#starRating').val(parseInt(index) + 1);
+
+        rating = parseInt(index) + 1;
+
+        //$('#triggerCommentModal').trigger('click');
+        //$('#sendRatingForm').submit();
+    }
+
+        function starsLeft (index) {
+        $('.star').css('content', '\2606');
+        $('.star').css('color', 'black');
+
+        for(var i = 0; i < rating; i ++) {
+            $('#star' + i).css('content', '\2605');
+            $('#star' + i).css('color', 'yellow');
+        }
+    }
+
+    function updateFeedback() {
+        $.post('/order/<%= order._id %>/feedback', {
+            feedback: {
+                text: text,
+                rating: rating
+            }
+        }, function (success) {
+            console.log(success);
+
+            if(success == true) {
+                window.top.location = "/";
+            }
+        })
+    }
+</script>
+</html>

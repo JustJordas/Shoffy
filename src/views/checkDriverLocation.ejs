@@ -10,6 +10,7 @@
 		* element that contains the map. */
 		#map {
 			height: 100%;
+			width: 56.25%;
 			margin: auto;
 		}
 		/* Optional: Makes the sample page fill the window. */
@@ -37,13 +38,6 @@
 				zoom: 15
 			});
 			infoWindow = new google.maps.InfoWindow;
-
-			var currentPositionMarker = new google.maps.Marker({
-				position: pos,
-				map: map,
-				title: 'Current position'
-			});
-
 		// Try HTML5 geolocation.
 			if (navigator.geolocation) {
 				navigator.geolocation.getCurrentPosition(function(position) {
@@ -55,8 +49,6 @@
 					infoWindow.setPosition(pos);
 					//infoWindow.setContent('Location found.');
 					infoWindow.open(map);
-
-					currentPositionMarker.setPosition(pos);
 
 					map.setCenter(pos);
 
@@ -76,11 +68,6 @@
 				// Browser doesn't support Geolocation
 				handleLocationError(false, infoWindow, map.getCenter());
 			}
-
-			currentPositionMarker.addListener('click', function() {
-				infoWindow.setContent('Your location');
-				infoWindow.open(map, currentPositionMarker);
-			});
 		}
 
 		function setShop(results, status) {
@@ -116,13 +103,9 @@
 			});
 
 			google.maps.event.addListener(marker, 'mouseover', function() {
-				infoWindow.setContent(shop.name);
+				infoWindow.setContent(shop.name || shop.firstName);
 				infoWindow.open(map, this);
 				//window.location.replace("/map/" + place.place_id);
-			});
-
-			google.maps.event.addListener(marker, 'click', function() {
-				window.location.replace("/shop/" + shop._id);
 			});
 		}
 
@@ -142,13 +125,17 @@
 
 <% include templates/footer.ejs %>
 <script>
-	var shops = <%- JSON.stringify(shops) %>;
+	const order = <%- JSON.stringify(order) %>;
 
 	$(document).ready(function () {
-		shops.forEach(function(shop) {
-			console.log(shop);
-			addMarker(shop);
-		});
+		console.log(order);
+		console.log(order.user);
+		console.log(order.driver);
+		console.log(order.shop);
+
+		addMarker(order.user);
+		addMarker(order.driver);
+		addMarker(order.shop);
 	});
 	
 </script>

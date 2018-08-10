@@ -4,16 +4,16 @@ const objectID = require('mongodb').ObjectID;
 const util = require('util');
 const database = require('../controllers/database')();
 
-var router = function () {
+var router = function() {
     driverRouter.route('/')
-        .all(function (req, res, next) {
+        .all(function(req, res, next) {
             if (!req.session.user) {
                 res.redirect('/auth/login');
             } else {
                 next();
             }
         })
-        .get(function (req, res) {
+        .get(function(req, res) {
             if (req.session.user.order && req.session.user.order.status == 'in progress') {
                 res.redirect('/order/' + req.session.user.order._id);
             } else if (req.session.user.order && req.session.user.order.status == 'completed') {
@@ -26,18 +26,18 @@ var router = function () {
         });
 
     driverRouter.route('/pool')
-        .all(function (req, res, next) {
+        .all(function(req, res, next) {
             if (!req.session.user) {
                 res.redirect('/auth/login');
             } else {
                 next();
             }
         })
-        .get(function (req, res) {
+        .get(function(req, res) {
             database.getOrders({
-                driver: req.session.user,
+                'driver._id': req.session.user._id,
                 status: 'in progress'
-            }, function (personalOrders) {
+            }, function(personalOrders) {
                 console.log('LOCK TEST');
                 console.log(personalOrders.length);
                 if (personalOrders.length == 1) {
@@ -50,7 +50,7 @@ var router = function () {
                         drivers: {
                             $in: new Array(objectID(req.session.user._id))
                         }
-                    }, function (orders) {
+                    }, function(orders) {
                         console.log("LOCK TEST 2");
                         //console.log(orders);
                         res.render('mapPool', {

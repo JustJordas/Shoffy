@@ -17,10 +17,27 @@
     <% } %>
 <% }); %>
 
-<body>    
-<% include templates/facebook.ejs %>
-    <div class="container-fluid">        
-        <img src="/res/firstBlurred.jpg" class="mx-auto d-block" style="height: 100vh; min-height: 100vh">
+<style>
+    .rating {
+        cursor: pointer;
+    }
+    .rating > span {
+        display: inline-block;
+        position: relative;
+        width: 1.1em;
+    }
+/*
+    .rating > span:hover:before,
+    .rating > span:hover ~ span:before {
+        content: "\2605";
+        position: absolute;
+        color: yellow;
+    }*/
+</style>
+    <% include templates/facebook.ejs %>
+    <div class="container-fluid">
+        <% include templates/nav.ejs %>
+        <img src="/res/image_yellow.jpg" class="mx-auto d-block" style="height: 100vh; min-height: 100vh">
         <div class="center">
             <div class="outterBox">
                 <h1>Current order:</h5>
@@ -50,7 +67,30 @@
                         <div class="card">
                             <a href="/order/<%= pastOrder._id %>">
                                 <div class="card-body">
-                                    <p class="card-text"><%= pastOrder._id %></p>  
+                                    <p class="card-text"><%= pastOrder._id %></p>
+                                    <% if(pastOrder.feedback && pastOrder.feedback.rating) { %>
+                                        <div class="rating float-right" style="font-size:2rem; display: inline-block">
+                                            <% for(var i = 0; i < 5; i ++) { %>
+                                                <span class="star<%= pastOrder._id %>" id="star<%= pastOrder._id %>_<%= i %>">☆</span>
+                                            <% } %>
+                                            <!--
+                                                <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
+                                            -->
+                                        </div>
+                                        <script>
+                                            $('.star<%= pastOrder._id %>').css('content', '\2606');
+                                            $('.star<%= pastOrder._id %>').css('color', 'black');
+
+                                            for(var i = 0; i < <%= pastOrder.feedback.rating %>; i ++) {
+                                                $('#star<%= pastOrder._id %>_' + i).css('content', '\2605');
+                                                $('#star<%= pastOrder._id %>_' + i).css('color', 'yellow');
+                                            }
+                                        </script>
+                                    <% } else { %>
+                                        <a href="/order/<%= pastOrder._id %>/feedback">
+                                            <p class="card-text" style="color: green">Leave feedback!</p>
+                                        </a>
+                                    <% } %>
                                 </div>
                             </a>
                         </div>
@@ -63,4 +103,16 @@
 
 
 <% include templates/footer.ejs %>
+
+<script>
+    function starsLeft (index) {
+        $('.star').css('content', '\2606');
+        $('.star').css('color', 'black');
+
+        for(var i = 0; i < index; i ++) {
+            $('#star' + i).css('content', '\2605');
+            $('#star' + i).css('color', 'yellow');
+        }
+    }
+</script>
 </html>

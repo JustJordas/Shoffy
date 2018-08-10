@@ -3,6 +3,8 @@
 
 <script src="/js/jquery-3.3.1.min.js"></script>
 
+<link rel="icon" href="/res/Shoffy_logo_no_text.png">
+
 <!-- include libraries(jQuery, bootstrap) -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 <script
@@ -12,13 +14,28 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
+<link rel="stylesheet" href="/css/nav.css">
+<script src="/js/jPanelMenu.js"></script>
+
+
 <script>
 	$(document).ready(function() {
+		/*
 		$('body').append('' +
 			'<a id="logoutButton" class="btn btn-danger">' +
 				'LOGOUT' +
 			'</a>'
 		);
+		*/
+
+		$('#logoutButton').on('click', function() {
+		    console.log('Sometimes');
+
+		    $.post( "/auth/logout", function() {
+		    	window.top.location = "/";
+		    });
+		});
 	});
+
 
 </script>

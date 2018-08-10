@@ -8,10 +8,10 @@
         <script type="text/javascript" src="/js/login.js"></script>
 </head>
 
-<body>    
+<% include templates/nav.ejs %>    
 <% include templates/facebook.ejs %>
     <div class="container">
-        <img src="/res/firstBlurred.jpg" class="mx-auto d-block" style="height: 100vh; min-height: 100vh">
+        <img src="/res/image_yellow.jpg" class="mx-auto d-block" style="height: 100vh; min-height: 100vh">
         <div class="center">
             <div class="outterBox">
                 <h1>
@@ -38,11 +38,50 @@
                 </div>
                 <% if(user.type == 'driver') { %>
                     <div class="row">
-                        <form id="formCompleteOrder" class="col-12" action="/order/<%= order._id %>/completed" method="post">
+                        <form id="formCompleteOrder" class="col-12" action="/order/<%= order._id %>/completed" method="post" onsubmit="sendMessage('Marked as completed'); return true;">
                             <button tyxpe="submit" class="btn btn-primary col-12 basketButton">
                                 Mark as completed
                             </button>
                         </form>
+                    </div>
+
+                    <script>
+                        // Note: This example requires that you consent to location sharing when
+                        // prompted by your browser. If you see the error "The Geolocation service
+                        // failed.", it means you probably did not give permission for the browser to
+                        // locate you.
+                        function initMap(){
+                            setInterval(function () {
+                                if (navigator.geolocation) {
+                                    navigator.geolocation.getCurrentPosition(function(position) {
+                                        pos = {
+                                            lat: position.coords.latitude,
+                                            lng: position.coords.longitude
+                                        };
+                                        //service.nearbySearch(request, setShop);
+        
+                                        $.post('/order/<%= order._id %>/updateDriverLocation', {
+                                            location: pos
+                                        }, function( success) {
+                                            if(success == true){
+                                                console.log('Location updated:', pos);
+                                            } else {
+                                                console.log('Location update failed', pos);
+                                            }
+                                        });
+                                    }, function() {});
+                                }
+                            }, 5000);                            
+                        }
+                    </script>
+                    <script async defer
+                        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDHfohgtdHeSqkM28bLbqGld5Hw3U_0qTA&libraries=places&callback=initMap">
+                    </script>
+                <% } else { %>
+                    <div class="row">
+                        <a href="/order/<%= order._id %>/driverLocation" class="btn btn-primary col-12 basketButton">
+                            Check driver
+                        </a>
                     </div>
                 <% } %>
             </div>
@@ -119,6 +158,8 @@ function addToBasket(id) {
     if (basket[id] < products[id].quantity) {
         basket[id] += 1;
         $('#amount' + id).val(parseInt($('#amount' + id).val()) + 1);
+
+        sendMessage('Item ' + id + ' added to basket');
     }
 
     var sum = 0.0;
@@ -129,6 +170,7 @@ function addToBasket(id) {
     });
 
     //console.log(sum);
+
 
     $('#basketButton').html('Order now: $' + sum.toFixed(2));
 }
@@ -146,6 +188,8 @@ function removeFromBasket(id) {
 
     if (basket[id] && basket[id] > 0) {
         basket[id] -= 1;
+
+        sendMessage('Item ' + id + ' removed from basket');
     }
 
     var sum = 0.0;
@@ -156,6 +200,7 @@ function removeFromBasket(id) {
     });
 
     //console.log(sum);
+
 
     $('#basketButton').html('Order now: $' + sum.toFixed(2));
 }
